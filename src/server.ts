@@ -1,46 +1,32 @@
 import express from "express";
-import router from "./router";
-import db from "./config/db";
-import colors from "colors";
-import cors, { CorsOptions } from "cors";
-import morgan from "morgan"
+import dotenv from "dotenv";
+import cors from "cors";
+import morgan from "morgan";
+import { corsConfig } from "./config/cors";
+import { conexionDB } from "./config/db";
+import userRoutes from "./routes/userRoutes";
+import horseRoutes from "./routes/horseRoutes";
+import imageRoutes from "./routes/imageRoutes";
+import activityRoutes from "./routes/activityRoutes";
 
-async function connectDB() {
-  try {
-    await db.authenticate();
-    db.sync();
-    // console.log(colors.magenta.bold("Conexión exitosa a la BD"));
-  } catch (error) {
-    console.log(colors.red.bold("ERROR: " + error));
-  }
-}
+dotenv.config();
+conexionDB();
 
-connectDB();
+const app = express();
+app.use(cors(corsConfig));
 
-// Instancia de express
-const server = express();
+// Logging
+app.use(morgan("dev"));
 
-//Permitir conexiones
-const corsOptions: CorsOptions = {
-  origin: function (origin, callback) {
-    if (origin === process.env.FRONTEND_URL) {
-      callback(null, true)
-    } else {
-      callback(new Error("Error de CORS"))
-    }
-  },
-};
-server.use(cors(corsOptions));
+// Leer datos del formulario
+app.use(express.json());
+app.use(express.static("public"));
 
-// Leer datos de formularios
-server.use(express.json());
+// Routes
+app.use("/api/users", userRoutes);
+app.use("/api/horses", horseRoutes);
+app.use("/api/activities", activityRoutes);
+app.use("/api/upload", imageRoutes);
 
-server.use(morgan("dev"))
 
-server.use("/api/products", router);
-
-server.get("/api", (req, res) => {
-  res.json({ msg: "Desde API" });
-});
-
-export default server;
+export default app;

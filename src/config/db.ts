@@ -1,16 +1,14 @@
-import { Sequelize } from "sequelize-typescript";
-import dotenv from "dotenv";
+import mongoose from "mongoose";
+import { exit } from "node:process";
+import colors from "colors";
 
-dotenv.config();
-
-const db = new Sequelize(process.env.DATABASE_URL!, {
-  models: [__dirname + "./../models/**/*"],
-  logging: false,
-  dialectOptions: {
-    ssl: {
-      require: "true",
-    },
-  },
-});
-
-export default db;
+export const conexionDB = async () => {
+  try {
+    const { connection } = await mongoose.connect(process.env.DATABASE_URL);
+    const url = `${connection.host}:${connection.port}`;
+    console.log(colors.magenta.bold(`MongoDB Conectado en: ${url}`));
+  } catch (error) {
+    console.log(colors.red.bold("Error al conectar a MongoDB"));
+    exit(1);
+  }
+};
