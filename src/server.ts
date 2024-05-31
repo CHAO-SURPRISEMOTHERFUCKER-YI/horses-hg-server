@@ -14,6 +14,10 @@ conexionDB();
 
 const app = express();
 app.use(cors(corsConfig));
+app.use(cors({
+    origin: process.env.FRONTEND_URL
+}
+));
 
 // Logging
 app.use(morgan("dev"));
