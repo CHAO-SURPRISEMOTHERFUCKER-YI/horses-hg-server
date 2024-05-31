@@ -22,7 +22,7 @@ export class UserController {
       // Generar el token
       const token = new Token();
       token.token = generateToken();
-      token.user = user.id;
+      token.user = user._id;
       // Enviar email
       AuthEmail.sendConfirmationEmail({
         email: user.email,
@@ -66,7 +66,7 @@ export class UserController {
 
       if (!user.confirmed) {
         const token = new Token();
-        token.user = user.id;
+        token.user = user._id;
         token.token = generateToken();
         await token.save();
 
@@ -116,7 +116,7 @@ export class UserController {
       // Generar el token
       const token = new Token();
       token.token = generateToken();
-      token.user = user.id;
+      token.user = user._id;
 
       // Enviar email
       AuthEmail.sendConfirmationEmail({
@@ -144,7 +144,7 @@ export class UserController {
       // Generar el token
       const token = new Token();
       token.token = generateToken();
-      token.user = user.id;
+      token.user = user._id;
       await token.save();
       // Enviar email
       AuthEmail.sendPasswordReset({
@@ -203,7 +203,7 @@ export class UserController {
     const { name, email } = req.body;
 
     const userExists = await User.findOne({ email });
-    if (userExists && userExists.id.toString() !== req.user.id.toString()) {
+    if (userExists && userExists.id.toString() !== req.user._id.toString()) {
       const error = new Error("Ese email ya esta en uso");
       return res.status(409).json({ error: error.message });
     }
@@ -222,7 +222,7 @@ export class UserController {
   static updateCurrentPassword = async (req: Request, res: Response) => {
     const { current_password, password } = req.body;
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
     const isPasswordCorrect = await checkPassword(
       current_password,
       user.password
