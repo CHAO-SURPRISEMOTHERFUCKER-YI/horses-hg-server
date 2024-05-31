@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
-import { corsConfig } from "./config/cors";
 import { conexionDB } from "./config/db";
 import userRoutes from "./routes/userRoutes";
 import horseRoutes from "./routes/horseRoutes";
@@ -13,7 +12,7 @@ dotenv.config();
 conexionDB();
 
 const app = express();
-app.use(cors(corsConfig));
+
 app.use(cors({
     origin: process.env.FRONTEND_URL
 }
