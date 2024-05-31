@@ -75,10 +75,33 @@ router.post(
   UserController.updatePasswordToken
 );
 
-router.get(
-  "/user",
+router.get("/user", authenticate, UserController.user);
+export default router;
+
+router.put(
+  "/profile",
   authenticate,
-  UserController.user
+  body("name").notEmpty().withMessage("El nombre no puede ir vacío"),
+  body("email").isEmail().withMessage("Email no válido"),
+  handleInputErrors,
+  UserController.updateProfile
 );
 
-export default router;
+router.post(
+  "/update-password",
+  authenticate,
+  body("current_password")
+    .notEmpty()
+    .withMessage("El nombre no puede ir vacío"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("El password es muy corto, mínimo 8 carácteres"),
+  body("password_confirmation").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("Los passwords no son iguales");
+    }
+    return true;
+  }),
+  handleInputErrors,
+  UserController.updateCurrentPassword
+);

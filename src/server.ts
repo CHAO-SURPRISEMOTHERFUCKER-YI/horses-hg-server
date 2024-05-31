@@ -26,7 +26,7 @@ app.use(express.static("public"));
 app.use("/api/users", userRoutes);
 app.use("/api/horses", horseRoutes);
 app.use("/api/activities", activityRoutes);
-app.use("/api/upload", imageRoutes);
+app.use("/api/uploads", imageRoutes);
 
 
 export default app;
