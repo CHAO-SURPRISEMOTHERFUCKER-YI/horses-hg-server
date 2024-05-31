@@ -1,18 +1,16 @@
 import mongoose, { Schema, Document, PopulatedDoc, Types } from "mongoose";
 import { IUser } from "./User";
 
-const horseStatus = {
-  AVAILABLE: "disponible",
-  NOT_AVAILABLE: "no disponible",
-  ON_SALE: "en venta",
-} as const;
-
-export type HorseStatus = (typeof horseStatus)[keyof typeof horseStatus];
-
 export interface IHorse extends Document {
   horseName: string;
-  available: string;
+  age: number;
+  gender: string;
+  breed: string;
+  color: string;
+  height: number;
   description: string;
+  available: string;
+  price: number;
   image: string;
   manager: PopulatedDoc<IUser & Document>;
 }
@@ -24,15 +22,42 @@ const HorseSchema: Schema = new Schema(
       required: true,
       trim: true,
     },
-    available: {
+    age: {
+      type: Number,
+      required: true,
+    },
+    gender: {
       type: String,
       required: true,
       trim: true,
+    },
+    breed: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    color: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    height: {
+      type: Number,
+      required: true,
     },
     description: {
       type: String,
       required: true,
       trim: true,
+    },
+    available: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      required: true,
     },
     image: {
       type: String,
