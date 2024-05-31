@@ -62,32 +62,19 @@ export class HorseController {
         return res.status(404).json({ error: "Caballo no encontrado" });
       }
 
-      const filePath = path.join(
-        __dirname,
-        "../..",
-        "public/images",
-        horse.image
-      );
+      const filePath = path.join(__dirname, "../..", "public/images", horse.image);
 
       fs.unlink(filePath, async (err) => {
         if (err) {
-          console.error(err);
-          console.error(filePath);
-          return res
-            .status(500)
-            .json({ error: "Error al eliminar el archivo de imagen" });
+          return res.status(500).json({ error: `Error al eliminar el archivo de imagen: ${filePath}` });
         }
 
         try {
           await horse.deleteOne();
           res.json("Registro del caballo y la imagen eliminados");
         } catch (deleteError) {
-          console.error(deleteError);
-          res
-            .status(500)
-            .json({
-              error: "Error al eliminar el caballo de la base de datos",
-            });
+          console.error("Error al eliminar el caballo de la base de datos", deleteError);
+          res.status(500).json({ error: "Error al eliminar el caballo de la base de datos" });
         }
       });
     } catch (error) {
